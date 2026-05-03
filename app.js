@@ -233,8 +233,14 @@ async function aiSuggestions(fullName, correctionType, targets) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ fullName, correctionType, targets })
   });
-  if (!response.ok) throw new Error("AI suggestion request failed");
-  const data = await response.json();
+  const raw = await response.text();
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = { error: `Backend returned non-JSON response (${response.status})` };
+  }
+  if (!response.ok) throw new Error(data.error || "AI suggestion request failed");
   return (data.suggestions || [])
     .map((item) => validateSuggestion(item, targets))
     .filter(Boolean)
@@ -291,7 +297,7 @@ async function suggestNames() {
     $("suggestionStatus").textContent = "Recommendations ready.";
   } catch (error) {
     renderSuggestions(localSuggestions(fullName, correctionType, targets));
-    $("suggestionStatus").textContent = "AI unavailable. Showing validated local recommendations.";
+    $("suggestionStatus").textContent = `AI unavailable: ${error.message}. Showing validated local recommendations.`;
   }
 }
 
