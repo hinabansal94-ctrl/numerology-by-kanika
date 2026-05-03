@@ -174,14 +174,12 @@ module.exports = async function handler(req, res) {
 
   const schema = {
     type: "object",
-    additionalProperties: false,
     properties: {
       suggestions: {
         type: "array",
         maxItems: 12,
         items: {
           type: "object",
-          additionalProperties: false,
           properties: {
             first: { type: "string" },
             surname: { type: "string" },
