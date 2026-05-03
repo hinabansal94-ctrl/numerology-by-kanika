@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Numerology By Kanika</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="Numerology calculator">
+        <aside class="controls" aria-label="Inputs">
+          <fieldset class="panel">
+            <legend>Name Analysis</legend>
+            <label class="field-row">
+              <span>Full Name:</span>
+              <input id="fullName" type="text" autocomplete="name">
+            </label>
+          </fieldset>
+
+          <fieldset class="panel">
+            <legend>Date of Birth</legend>
+            <label class="field-row">
+              <span>DOB (DD-MM-YYYY):</span>
+              <input id="dob" type="text" inputmode="numeric" placeholder="8-7-2002">
+            </label>
+            <label class="field-row">
+              <span>Year for Personal Year:</span>
+              <input id="personalYear" type="number" min="1800" max="2100">
+            </label>
+            <label class="field-row">
+              <span>Gender:</span>
+              <select id="gender">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset class="panel">
+            <legend>Digit Adder</legend>
+            <label class="field-row">
+              <span>Number input (Digit Adder):</span>
+              <input id="digitInput" type="text" inputmode="numeric">
+            </label>
+          </fieldset>
+
+          <fieldset class="panel">
+            <legend>History</legend>
+            <label class="field-row history-row">
+              <span>History:</span>
+              <select id="historySelect"></select>
+              <button id="loadHistory" type="button">Load from History</button>
+            </label>
+          </fieldset>
+
+          <div class="actions" aria-label="Actions">
+            <label class="font-control">
+              <span>Font size:</span>
+              <input id="fontSize" type="number" min="10" max="40" value="16">
+            </label>
+            <button id="calculate" type="button">Calculate</button>
+            <button id="exportPdf" type="button">Export to PDF</button>
+            <button id="clear" type="button">Clear</button>
+          </div>
+        </aside>
+
+        <section class="results-pane" aria-label="Results">
+          <h1>Numerology By Kanika</h1>
+          <pre id="results"></pre>
+        </section>
+      </section>
+
+      <section id="correctionPanel" class="correction-panel" hidden aria-label="Name correction">
+        <div class="correction-header">
+          <h2>Name Correction</h2>
+          <p>Choose what you want to correct after reviewing the calculations.</p>
+        </div>
+
+        <div class="correction-grid">
+          <label>
+            <span>Correction Type</span>
+            <select id="correctionType">
+              <option value="first">First name correction</option>
+              <option value="surname">Surname correction</option>
+              <option value="overall">Overall name correction</option>
+            </select>
+          </label>
+          <label>
+            <span>First Name Target</span>
+            <input id="firstTarget" type="number" min="1" max="9" placeholder="1-9">
+          </label>
+          <label>
+            <span>Surname Target</span>
+            <input id="surnameTarget" type="number" min="1" max="9" placeholder="1-9">
+          </label>
+          <label>
+            <span>Overall Target</span>
+            <input id="overallTarget" type="number" min="1" max="9" placeholder="1-9">
+          </label>
+        </div>
+
+        <div class="correction-actions">
+          <button id="suggestNames" type="button">Suggest Names</button>
+          <span id="suggestionStatus" role="status"></span>
+        </div>
+
+        <div id="suggestions" class="suggestions" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

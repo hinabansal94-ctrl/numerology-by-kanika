@@ -1,0 +1,12 @@
+{
+  "name": "numerology-by-kanika-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "check": "node --check app.js && node --check api/name-suggestions.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
