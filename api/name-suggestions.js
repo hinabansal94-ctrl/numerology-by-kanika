@@ -5,7 +5,7 @@ const CHALDEAN_MAP = {
 };
 
 const SUGGESTION_LIMIT = 5;
-const MODEL = process.env.OPENAI_MODEL || "gpt-5-mini";
+const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 function digitSum(value) {
   return String(Math.abs(parseInt(value, 10) || 0))
@@ -129,14 +129,7 @@ function responseJson(res, status, body) {
 }
 
 function extractOutputText(data) {
-  if (typeof data.output_text === "string") return data.output_text;
-  const chunks = [];
-  for (const item of data.output || []) {
-    for (const content of item.content || []) {
-      if (content.type === "output_text" && content.text) chunks.push(content.text);
-    }
-  }
-  return chunks.join("\n");
+  return data.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n") || "";
 }
 
 module.exports = async function handler(req, res) {
@@ -145,8 +138,8 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    responseJson(res, 500, { error: "OPENAI_API_KEY is not configured" });
+  if (!process.env.GEMINI_API_KEY) {
+    responseJson(res, 500, { error: "GEMINI_API_KEY is not configured" });
     return;
   }
 
@@ -202,40 +195,40 @@ module.exports = async function handler(req, res) {
   };
 
   try {
-    const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: MODEL,
-        instructions: "You are a careful Indian name-correction assistant for a Chaldean numerology app. Suggest plausible spellings only. The server will verify the final numerology; focus on natural-sounding names and obeying spelling-change rules.",
-        input: [
+        systemInstruction: {
+          parts: [
+            {
+              text: "You are a careful Indian name-correction assistant for a Chaldean numerology app. Suggest plausible spellings only. The server will verify the final numerology; focus on natural-sounding names and obeying spelling-change rules."
+            }
+          ]
+        },
+        contents: [
           {
             role: "user",
-            content: [
+            parts: [
               {
-                type: "input_text",
                 text: `Return name correction candidates as JSON only.\n\nRequest:\n${JSON.stringify(prompt, null, 2)}`
               }
             ]
           }
         ],
-        text: {
-          format: {
-            type: "json_schema",
-            name: "name_correction_suggestions",
-            schema,
-            strict: true
-          }
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: schema,
+          temperature: 0.8
         }
       })
     });
 
-    const data = await openaiResponse.json();
-    if (!openaiResponse.ok) {
-      responseJson(res, openaiResponse.status, { error: data.error?.message || "OpenAI request failed" });
+    const data = await geminiResponse.json();
+    if (!geminiResponse.ok) {
+      responseJson(res, geminiResponse.status, { error: data.error?.message || "Gemini request failed" });
       return;
     }
 

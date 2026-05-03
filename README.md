@@ -19,13 +19,13 @@ For true AI recommendations, keep the API key outside Shopify frontend JavaScrip
 Set these environment variables in Vercel:
 
 ```text
-OPENAI_API_KEY=your OpenAI API key
-OPENAI_MODEL=gpt-5-mini
+GEMINI_API_KEY=your Gemini API key
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ## Feedback Training
 
-Accept/reject clicks are stored locally right now. This is version B: OpenAI suggestions only, database later. With a database connected, feedback should be stored and used in future prompts/ranking. This is how the agent improves over time; it does not retrain itself automatically inside Shopify.
+Accept/reject clicks are stored locally right now. This is version B: Gemini suggestions only, database later. With a database connected, feedback should be stored and used in future prompts/ranking. This is how the agent improves over time; it does not retrain itself automatically inside Shopify.
 
 ## Current Correction Rules
 
@@ -42,4 +42,4 @@ Not allowed:
 - `sh <-> s`
 - `aa <-> ah`
 
-The app asks OpenAI for candidates, then validates all returned names again before showing them.
+The app asks Gemini for candidates, then validates all returned names again before showing them.
